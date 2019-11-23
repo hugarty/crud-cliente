@@ -12,6 +12,7 @@ import com.mirante.crudcliente.Services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,17 +29,20 @@ public class ClienteController {
     @Autowired
     ClienteService clienteService;
 
+    @CrossOrigin
     @GetMapping("oi")
     public String oi (){
         return "Foi e  voltou";
     }
 
+    @CrossOrigin
     @GetMapping("lista")
     public ResponseEntity<List<ClienteDto>> getTodosClientes (){
         final List<ClienteDto> clientes = clienteService.getTodosClientes();
         return ResponseEntity.ok(clientes);
     }
 
+    @CrossOrigin
     @PostMapping("adiciona")
     @Transactional
     public ResponseEntity<ClienteDto> criaNovoCliente(@RequestBody @Valid final Cliente cliente) {
@@ -46,6 +50,7 @@ public class ClienteController {
         return ResponseEntity.ok(clienteDto);
     }
 
+    @CrossOrigin
     @DeleteMapping("deleta/{id}")
     @Transactional
     public ResponseEntity<?> deletaCliente(@PathVariable Long id) {
@@ -53,6 +58,7 @@ public class ClienteController {
         return ResponseEntity.status(status).build();
     }
 
+    @CrossOrigin
     @PatchMapping("atualiza/{id}")
     @Transactional
     public ResponseEntity<ClienteDto> atualizaCliente(@PathVariable Long id,@RequestBody @Valid final Cliente cliente) {
