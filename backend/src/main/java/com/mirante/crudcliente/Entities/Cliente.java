@@ -103,6 +103,14 @@ public class Cliente {
         this.endereco = endereco;
     }
 
+    public void atualizaCliente(Cliente cliente) {
+        this.nome = cliente.getNome();
+        this.cpf = cliente.getCpf();
+        this.clienteEmail = cliente.getEmail();
+        this.telefones = cliente.getTelefones();
+        this.endereco = cliente.getEndereco();
+    }
+
     @Override
     public String toString() {
         return "{" +

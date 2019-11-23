@@ -14,11 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,30 +29,34 @@ public class ClienteController {
     ClienteService clienteService;
 
     @GetMapping("oi")
-    @ResponseBody
     public String oi (){
         return "Foi e  voltou";
     }
 
     @GetMapping("lista")
-    @ResponseBody
     public ResponseEntity<List<ClienteDto>> getTodosClientes (){
-        List<ClienteDto> clientes = clienteService.getTodosClientes();
+        final List<ClienteDto> clientes = clienteService.getTodosClientes();
         return ResponseEntity.ok(clientes);
     }
-    
+
     @PostMapping("adiciona")
-    @ResponseBody
     @Transactional
-    public ResponseEntity<ClienteDto> criaNovoCliente (@RequestBody @Valid Cliente cliente){
-        ClienteDto clienteDto = clienteService.CriaNovoCliente(cliente);
+    public ResponseEntity<ClienteDto> criaNovoCliente(@RequestBody @Valid final Cliente cliente) {
+        final ClienteDto clienteDto = clienteService.CriaNovoCliente(cliente);
         return ResponseEntity.ok(clienteDto);
     }
 
     @DeleteMapping("deleta/{id}")
     @Transactional
-    public ResponseEntity<?> deletaCliente(@PathVariable Long id){
-        HttpStatus status= clienteService.deletaCliente(id);
+    public ResponseEntity<?> deletaCliente(@PathVariable Long id) {
+        HttpStatus status = clienteService.deletaCliente(id);
         return ResponseEntity.status(status).build();
+    }
+
+    @PatchMapping("atualiza/{id}")
+    @Transactional
+    public ResponseEntity<ClienteDto> atualizaCliente(@PathVariable Long id,@RequestBody @Valid final Cliente cliente) {
+        ClienteDto clienteDto = clienteService.atualizaCliente(id, cliente);
+        return ResponseEntity.status(HttpStatus.OK).body(clienteDto);
     }
 }

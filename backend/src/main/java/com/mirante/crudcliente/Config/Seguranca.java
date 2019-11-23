@@ -50,7 +50,8 @@ public class Seguranca extends WebSecurityConfigurerAdapter{
         .antMatchers(HttpMethod.POST,"/login").permitAll()
         .antMatchers(HttpMethod.GET,"/cliente/oi").permitAll()
         .antMatchers(HttpMethod.POST,"/cliente/adiciona").hasAuthority(PerfilEnum.ADMIN.toString())
-        .antMatchers(HttpMethod.POST,"/cliente/deleta/**").hasAuthority(PerfilEnum.ADMIN.toString())
+        .antMatchers(HttpMethod.DELETE,"/cliente/deleta/**").hasAuthority(PerfilEnum.ADMIN.toString())
+        .antMatchers(HttpMethod.PATCH,"/cliente/atualiza/**").hasAuthority(PerfilEnum.ADMIN.toString())
         .anyRequest().authenticated()
         .and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and().addFilterBefore(new AutenticaUsuarioTokenFilter(tokenJwtService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
