@@ -1,6 +1,7 @@
 package com.mirante.crudcliente.Config;
 
 import com.mirante.crudcliente.Config.Filtros.AutenticaUsuarioTokenFilter;
+import com.mirante.crudcliente.Enums.PerfilEnum;
 import com.mirante.crudcliente.Repositories.UsuarioRepository;
 import com.mirante.crudcliente.Services.TokenJwtService;
 import com.mirante.crudcliente.Services.UsuarioDetailsService;
@@ -46,8 +47,10 @@ public class Seguranca extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
         .antMatchers(HttpMethod.OPTIONS).permitAll()
-        .antMatchers(HttpMethod.GET,"/cliente/oi").permitAll()
         .antMatchers(HttpMethod.POST,"/login").permitAll()
+        .antMatchers(HttpMethod.GET,"/cliente/oi").permitAll()
+        .antMatchers(HttpMethod.POST,"/cliente/adiciona").hasAuthority(PerfilEnum.ADMIN.toString())
+        .antMatchers(HttpMethod.POST,"/cliente/deleta/**").hasAuthority(PerfilEnum.ADMIN.toString())
         .anyRequest().authenticated()
         .and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and().addFilterBefore(new AutenticaUsuarioTokenFilter(tokenJwtService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
