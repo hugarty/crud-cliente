@@ -44,7 +44,6 @@ public class Cliente {
     }
 
     public Cliente(String nome, String cpf, List<ClienteEmail> email, List<Telefone> telefones, Endereco endereco) {
-        System.out.println("\n\n\noi\n\n\n");
         this.nome = nome;
         this.cpf = cpf;
         this.clienteEmail = email;

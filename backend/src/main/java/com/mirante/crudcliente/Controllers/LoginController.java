@@ -2,9 +2,12 @@ package com.mirante.crudcliente.Controllers;
 
 import javax.validation.Valid;
 
+import com.mirante.crudcliente.Dtos.AutenticacaoDto;
 import com.mirante.crudcliente.Dtos.Formularios.LoginFormulario;
+import com.mirante.crudcliente.Services.LoginService;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,16 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
-public class Login {
+public class LoginController {
 
-    @GetMapping
-    public String oi(){
-        return "getmapping";
-    }
+    @Autowired
+    LoginService loginService;
 
     @PostMapping
     @ResponseBody
-    public String doLogin(@RequestBody @Valid LoginFormulario loginForm){
-        return "doLogisssn";
+    public ResponseEntity<AutenticacaoDto> doLogin(@RequestBody @Valid LoginFormulario loginForm){
+        AutenticacaoDto autenticacaoDto = loginService.doLogin(loginForm);
+        return ResponseEntity.ok(autenticacaoDto);
     }
 }
