@@ -15,22 +15,22 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class TokenJwtService {
 
-    Long tempoDuracaoTokenMinutos = 10l;
+    Long tempoValidadeTokenMinutos = 100l;
     String nomeProjeto = "CRUD-cliente";
     String senhaBaseToken = "H]ass3fe32AQ[VB}?=5t33PL6ktF@{YZe5Jp](mXK7u8}<?Mg[sQj(=QvvaT4fkN";
 
     public String geraToken(Authentication auth){
         Usuario usuario = (Usuario) auth.getPrincipal();
         Date agora = new Date();
-        Date dataExpiracao = geraDataDeExpiracao(agora, tempoDuracaoTokenMinutos);
-
-        return Jwts.builder()
+        Date dataExpiracao = geraDataDeExpiracao(agora, tempoValidadeTokenMinutos);
+        String token = Jwts.builder()
             .setIssuer(nomeProjeto)
             .setSubject(usuario.getId().toString())
             .setIssuedAt(agora)
             .setExpiration(dataExpiracao)
             .signWith(SignatureAlgorithm.HS256, senhaBaseToken)
             .compact();
+        return token;
     }
 
     public boolean verificaValidadeToken(String token){
@@ -48,7 +48,11 @@ public class TokenJwtService {
 	}
 
     private Date geraDataDeExpiracao (Date dataInicial, Long minutos){
-        minutos = 1000*60*60*minutos;
-        return new Date(dataInicial.getTime() + tempoDuracaoTokenMinutos);
+        minutos = transformaMilissegundosEmMinutos(minutos);
+        return new Date((Long)(dataInicial.getTime() + minutos));
+    }
+
+    private Long transformaMilissegundosEmMinutos(Long mili){
+        return mili*1000*60;
     }
 }
