@@ -22,10 +22,6 @@ public class Telefone {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    // 6130325856
-    // 61998840364
-    // 12345678911
-
     @NotNull
     @Size(min = 10)
     String numero;
