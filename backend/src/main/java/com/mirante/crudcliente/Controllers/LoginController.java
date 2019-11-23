@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,7 +23,6 @@ public class LoginController {
 
     @CrossOrigin
     @PostMapping
-    @ResponseBody
     public ResponseEntity<AutenticacaoDto> doLogin(@RequestBody @Valid LoginFormulario loginForm){
         AutenticacaoDto autenticacaoDto = loginService.doLogin(loginForm);
         return ResponseEntity.ok(autenticacaoDto);

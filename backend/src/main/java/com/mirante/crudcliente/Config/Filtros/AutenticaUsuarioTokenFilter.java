@@ -52,7 +52,7 @@ public class AutenticaUsuarioTokenFilter extends OncePerRequestFilter {
     private String getTokenFromRequest(HttpServletRequest request) {
         String value = request.getHeader("Authorization");
         String token = "";
-        if(value != null)
+        if(value != null && value.length() > 7)
             token = value.substring(7);
         return token;
     }

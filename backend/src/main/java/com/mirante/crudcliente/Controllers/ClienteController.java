@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
@@ -29,20 +30,17 @@ public class ClienteController {
     @Autowired
     ClienteService clienteService;
 
-    @CrossOrigin
-    @GetMapping("oi")
-    public String oi (){
-        return "Foi e  voltou";
+    @GetMapping("token")
+    public ResponseEntity<?> testaToken (){
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @CrossOrigin
     @GetMapping("lista")
     public ResponseEntity<List<ClienteDto>> getTodosClientes (){
         final List<ClienteDto> clientes = clienteService.getTodosClientes();
         return ResponseEntity.ok(clientes);
     }
 
-    @CrossOrigin
     @PostMapping("adiciona")
     @Transactional
     public ResponseEntity<ClienteDto> criaNovoCliente(@RequestBody @Valid final Cliente cliente) {
@@ -50,7 +48,6 @@ public class ClienteController {
         return ResponseEntity.ok(clienteDto);
     }
 
-    @CrossOrigin
     @DeleteMapping("deleta/{id}")
     @Transactional
     public ResponseEntity<?> deletaCliente(@PathVariable Long id) {
@@ -58,7 +55,6 @@ public class ClienteController {
         return ResponseEntity.status(status).build();
     }
 
-    @CrossOrigin
     @PatchMapping("atualiza/{id}")
     @Transactional
     public ResponseEntity<ClienteDto> atualizaCliente(@PathVariable Long id,@RequestBody @Valid final Cliente cliente) {
