@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -24,6 +25,7 @@ public class Telefone {
 
     @NotNull
     @Size(min = 10)
+    @Digits(integer = 11,fraction = 0)
     String numero;
 
     @Enumerated(EnumType.STRING)

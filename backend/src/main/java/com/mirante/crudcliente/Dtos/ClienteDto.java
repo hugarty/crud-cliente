@@ -18,7 +18,7 @@ public class ClienteDto{
     public ClienteDto(Cliente cliente) {
         this.id = cliente.getId();
         this.nome = cliente.getNome();
-        this.cpf = cliente.getCpf();
+        this.cpf = aplicaMascaraCPF(cliente.getCpf());
         this.email = cliente.getEmail().stream()
             .map(email -> email.getEmail()).collect(Collectors.toList());
         this.telefones = cliente.getTelefones().stream()
@@ -61,4 +61,9 @@ public class ClienteDto{
         return this.endereco;
     }
 
+    private String aplicaMascaraCPF(String cpf){
+        String cpfComMascara = String.format("%s.%s.%s-%s", 
+            cpf.substring(0, 3),cpf.substring(3, 6),cpf.substring(6, 9),cpf.substring(9));
+        return cpfComMascara;
+    }
 }

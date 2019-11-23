@@ -17,7 +17,7 @@ public class EnderecoDto {
 
     public EnderecoDto(Endereco endereco) {
         this.id = endereco.getId();
-        this.cep = endereco.getCep();
+        this.cep = aplicaMascaraCEP(endereco.getCep());
         this.logradouro = endereco.getLogradouro();
         this.bairro = endereco.getBairro();
         this.cidade = endereco.getCidade();
@@ -56,6 +56,12 @@ public class EnderecoDto {
 
     public String getComplemento() {
         return this.complemento;
+    }
+
+    private String aplicaMascaraCEP(String cep){
+        String cepComMascara = String.format("%s-%s", 
+            cep.substring(0, 6),cep.substring(6));
+        return cepComMascara;
     }
 
 }

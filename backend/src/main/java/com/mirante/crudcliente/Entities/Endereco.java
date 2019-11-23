@@ -5,7 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -16,6 +18,8 @@ public class Endereco {
     Long id;
 
     @NotNull
+    @Size(min = 8, max = 8)
+    @Digits(integer = 8, fraction = 0)
     String cep;
     @NotNull
     String logradouro;

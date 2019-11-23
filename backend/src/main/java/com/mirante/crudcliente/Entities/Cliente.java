@@ -11,7 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -22,10 +24,12 @@ public class Cliente {
 
     @NotNull
     @Size(min = 3, max = 100)
+    @Pattern(regexp = "^[A-Za-z0-9\\s]*")
     String nome;
 
     @NotNull
-    @Size(min = 10, max = 12)
+    @Size(min = 11, max = 11)
+    @Digits(integer = 11, fraction = 0)
     String cpf;
 
     @Size(min=1)
