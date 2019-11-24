@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import './App.css';
 
-import Cliente from './components/cliente'
-import { listaClientes } from './services/ApiCrudCliente'
+import Cliente from './components/cliente/cliente'
+import { listaClientes, removeTokenEPerfilDoLocalStorage } from './services/ApiCrudCliente'
+import Formulario from './components/formulario/formularioAdicionaCliente';
 
 class App extends Component {
     constructor() {
@@ -15,16 +16,31 @@ class App extends Component {
     componentDidMount() {
         listaClientes()
             .then(json => {
-                console.log("oi",json)
                 this.setState({clientes:json})
             })
-            .catch()
+            .catch( any => {
+                alert("Não consegui pegar os clientes no servidor backend.\nVou te enviar para a tela de login.")
+                this.props.history.push('/');
+            })
+    }
+
+    fazLogout(){
+        removeTokenEPerfilDoLocalStorage();
+        this.props.history.push('/');
     }
 
     render() {
         return (
             <Fragment>
-                <p>header - add novo cliente - logout</p>
+                <header>
+                    <button>
+                        Adicionar cliente
+                    </button>
+                    <button onClick={this.fazLogout.bind(this)}>
+                        Logout
+                    </button>
+                </header>
+                <Formulario />
                 { (this.state.clientes) ? 
                     this.state.clientes.map(cliente => <Cliente key={cliente.id} atributos={cliente}/>): ''}
             </Fragment>

@@ -56,7 +56,7 @@ export const deletaCliente = (clienteId) => {
     })
 }
 
-const verificaRespostaRetornaPromisseJson = (resposta) =>{
+export const verificaRespostaRetornaPromisseJson = (resposta) =>{
     if(resposta.ok)
         return resposta.json()
     return Promise.reject(resposta);
@@ -68,8 +68,13 @@ export const salvaTokenEPerfilNoLocalStorage = json =>{
         localStorage.setItem(STORAGE.PERFIL, json.perfil);
     }
 }
+export const removeTokenEPerfilDoLocalStorage = json =>{
+    localStorage.removeItem(STORAGE.TOKEN);
+    localStorage.removeItem(STORAGE.PERFIL);
+}
 
-const getHeader = () =>{
+
+export const getHeader = () =>{
     return new Headers(HEADERS);
 }
 

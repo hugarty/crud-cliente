@@ -1,0 +1,7 @@
+.endereco {
+    display:none;
+}
+
+.endereco-completo {
+    display: flex;
+}
