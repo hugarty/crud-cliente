@@ -92,20 +92,40 @@ class Formulario extends Component {
             logradouro : this.state.endereco.logradouro,
             uf : this.state.endereco.uf,
         }
-        this.props.appendNovoCliente(json);
+        this.props.enviaJsonParaPai(json);
+        this.limpaFormulario();
+    }
+    
+    limpaFormulario(){
+        this.setState({
+            nome: "",
+            cpf: "",
+            email:[],
+            telefones:[],
+            endereco:{
+                cep:"",
+                logradouro:"",
+                bairro:"",
+                cidade:"",
+                uf:"",
+                complemento:""
+            }
+        })
     }
 
     render(){
         return (
         <form onSubmit={this.handleSubmit}>
-            <h1>Formulário adicionar cliente</h1>
+            <h1>Formulário para {this.props.titulo} cliente</h1>
             <label htmlFor="nome">Nome do cliente</label>
-            <input type="text" name="nome" minLength="3" maxLength="100" onChange={this.handleChange}required/>
+            <input type="text" name="nome" minLength="3" maxLength="100" required
+                value={this.state.nome}
+                onChange={this.handleChange}/>
             <label htmlFor="cpf">CPF </label>
             <input type="text" name="cpf"  minLength="14" required
                 value={this.state.cpf}  
                 onChange={this.handleChangeCPF}/>
-            <Email getEmails={this.getEmails.bind(this)}/>
+            <Email teste={this.state.teste}getEmails={this.getEmails.bind(this)}/>
             <Telefone getTelefones={this.getTelefones.bind(this)}/>
             <section>
                 <legend>Endereço</legend>

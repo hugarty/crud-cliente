@@ -20,3 +20,21 @@
 .App-link {
   color: #09d3ac;
 }
+
+
+.mostra-formulario-adicao{
+  display: flex;
+}
+
+.nao-mostra-formulario-adicao{
+  display: none;
+}
+
+
+.mostra-formulario-atualizacao {
+  display: flex;
+}
+
+.nao-mostra-formulario-atualizacao{
+  display: none;
+}
