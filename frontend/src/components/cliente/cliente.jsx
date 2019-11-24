@@ -1,7 +1,15 @@
 import React from 'react';
 
 
-function Cliente ({atributos}){
+function Cliente ({atributos, removeCliente}){
+
+
+    const onClickRemoveCliente = () => {
+        if(window.confirm(`Quer remover o cliente ${atributos.nome}?`)){
+            removeCliente(atributos.id);
+        }
+    }
+
     return (
         <div>
             <p>{atributos.id}- {atributos.nome}</p>
@@ -13,6 +21,7 @@ function Cliente ({atributos}){
             {atributos.endereco.cep}
             {atributos.endereco.cidade}
             {atributos.endereco.complemento}
+            <button onClick={onClickRemoveCliente}>remover cliente</button>
         </div>
     )
 }

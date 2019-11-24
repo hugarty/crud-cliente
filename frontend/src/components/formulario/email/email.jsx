@@ -3,40 +3,43 @@ import React, {Component} from 'react'
 export default class Email extends Component{
     constructor() {
         super()
-        this.state = {quantidadeDeEmails :1}
+        this.state = {emails :[""]}
+    }
+
+    handleChangeEmail = (e) => {
+        const posicao = parseInt(e.target.name);
+        const emailsAlterado = this.state.emails.map((obj,index)=>{
+            if(index === posicao){
+                obj = e.target.value;
+            }
+            return obj;
+        })
+        this.setState({emails: emailsAlterado})
+        this.getEmails(emailsAlterado);
     }
 
     geraEmails = () =>{
-        let arrayDeEmails= [];
-        for (let index = 0; index < this.state.quantidadeDeEmails; index++) {
-            arrayDeEmails.push(<input key={index} name={"email"+index} type="email" required
-                onChange={e => this.setState({[e.target.name]: e.target.value})}/>)
-        }
-        return arrayDeEmails;
+        return this.state.emails.map((obj, index)=>(
+            <input key={index} name={index} type="email" required
+                onChange={this.handleChangeEmail}/>
+        ))
     }
-
-    adicionaEmail = (e) => {
-        let novaQuantidadeDeEmails = this.state.quantidadeDeEmails + 1;
-        this.setState({...this.setState, quantidadeDeEmails : novaQuantidadeDeEmails})
+    
+    adicionaEmail = () =>{
+        this.setState({emails :[...this.state.emails,""]})
     }
-
-    removeEmail = (e) =>{
-        if(this.state.quantidadeDeEmails > 1){
-            let novaQuantidadeDeEmails = this.state.quantidadeDeEmails - 1;
-            this.setState({...this.setState,
-                [`email${novaQuantidadeDeEmails}`]:undefined, 
-                quantidadeDeEmails : novaQuantidadeDeEmails})
+    
+    removeEmail = () =>{
+        if(this.state.emails.length > 1){
+            let novosEmails = this.state.emails.map(t=>t);
+            novosEmails.pop()
+            this.setState({emails : novosEmails})
+            this.getEmails(novosEmails);
         }
     }
 
-    getEmails = () => {
-        let arrayDeEmails = [];
-        for (let index = 0; index < this.state.quantidadeDeEmails ; index++) {
-            if(this.state[`email${index}`]){
-                arrayDeEmails.push(this.state[`email${index}`]);
-            }
-        }
-        console.log(arrayDeEmails);
+    getEmails = (emails) => {
+        this.props.getEmails(emails);
     }
 
     render(){

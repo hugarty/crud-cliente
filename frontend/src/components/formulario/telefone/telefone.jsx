@@ -1,73 +1,82 @@
 import React, {Component} from 'react'
-import { mascaraTelefone } from '../../../utils/utils'
+import { mascaraTelefone, mascaraCelular} from '../../../utils/utils'
 
 export default class Telefone extends Component{
     constructor() {
         super()
-        this.state = {quantidadeDeTelefones :1}
+        this.state = {telefones : [{
+            numero:'', 
+            tipoTelefoneEnum:'CELULAR'}]
+        }
+    }
+
+    handleChangeNumero = (e) => {
+        const posicao = parseInt(e.target.name);
+        const novosTelefones = this.state.telefones.map((obj,index)=>{
+            if(index === posicao){
+                obj.numero = this.mascaraDeAcordoComTipo(e.target.value, obj.tipoTelefoneEnum);
+            }
+            return obj;
+        })
+        this.setState({telefones: novosTelefones})
+        this.getTelefones(novosTelefones);
+    }
+
+    handleChangeTipoNumero = (e) => {
+        const posicao = parseInt(e.target.name);
+        const novosTelefones = this.state.telefones.map((obj,index)=>{
+            if(index === posicao){
+                obj.tipoTelefoneEnum = e.target.value;
+                obj.numero = this.mascaraDeAcordoComTipo(obj.numero, obj.tipoTelefoneEnum)
+            }
+            return obj;
+        })
+        this.setState({telefones: novosTelefones})
+        this.getTelefones(novosTelefones);
+    }
+
+    mascaraDeAcordoComTipo = (numero, tipo) =>{
+        if(tipo === "CELULAR"){
+            numero = mascaraCelular(numero);
+        }
+        else{
+            numero = mascaraTelefone(numero);
+        }
+        return numero;
     }
 
     geraTelefones = () =>{
-        let arrayDeTelefones= [];
-        for (let index = 0; index < this.state.quantidadeDeTelefones; index++) {
-            arrayDeTelefones.push(
-                <div key={index}>
-                    <input name={`telefone${index}`} type="text" required
-                        value={this.state[`telefone${index}`]}
-                        onChange={this.handleChangeTelefone}/>
-                    <select name={`telefone${index}`} 
-                        onChange={e => this.setState({
-                            [e.target.name]: {
-                                ...this.state[e.target.name],
-                                tipoTelefoneEnum: e.target.value
-                            }})}>
-                        <option value="RESIDENCIAL">Residencial</option>
-                        <option value="COMERCIAL">Comercial</option>
-                        <option value="CELULAR">Celular</option>
-                    </select>
-                </div>)
-        }
-        return arrayDeTelefones;
+        return this.state.telefones.map((telefone, index) => (
+            <div key={index}>
+                <input name={index} type="text" required minLength="13"
+                    value={this.state.telefones[index].numero}
+                    onChange={this.handleChangeNumero}/>
+                <select name={index}
+                    onChange={this.handleChangeTipoNumero}>
+                    <option value="CELULAR">Celular</option>
+                    <option value="RESIDENCIAL">Residencial</option>
+                    <option value="COMERCIAL">Comercial</option>
+                </select>
+            </div>
+        ));
+    }
+    
+    adicionaTelefone = () =>{
+        this.setState({telefones :[...this.state.telefones, {numero:'', tipoTelefoneEnum:'CELULAR'}]})
     }
 
-    adicionaTelefone = (e) => {
-        let novaQuantidadeDeTelefones = this.state.quantidadeDeTelefones + 1;
-        this.setState({...this.setState, quantidadeDeTelefones : novaQuantidadeDeTelefones})
-    }
-
-    removeTelefone = (e) =>{
-        if(this.state.quantidadeDeTelefones > 1){
-            let novaQuantidadeDeTelefones = this.state.quantidadeDeTelefones - 1;
-            this.setState({...this.setState,
-                [`telefone${novaQuantidadeDeTelefones}`]:undefined, 
-                quantidadeDeTelefones : novaQuantidadeDeTelefones})
+    removeTelefone = () => {
+        if(this.state.telefones.length > 1){
+            let novosTelefones = this.state.telefones.map(t=>t);
+            novosTelefones.pop()
+            this.setState({telefones : novosTelefones})
+            this.getTelefones(novosTelefones);
         }
     }
 
-    getTelefones = () => {
-        let arrayDeTelefones = [];
-        for (let index = 0; index < this.state.quantidadeDeTelefones ; index++) {
-            let telefone = this.state[`telefone${index}`];
-            if(telefone){
-                if(telefone.tipoTelefoneEnum){
-                    arrayDeTelefones.push(telefone);
-                }else{
-                    arrayDeTelefones.push({...telefone, tipoTelefoneEnum:"RESIDENCIAL"});
-                }
-            }
-        }
-        console.log(arrayDeTelefones);
+    getTelefones = (telefones) => {
+        this.props.getTelefones(telefones)
     }
-
-    handleChangeTelefone = e => {
-        this.setState({
-            [e.target.name]: {
-                ...this.state[e.target.name],
-                numero: mascaraTelefone(e.target.value)
-            }
-        })
-    }
-
 
     render(){
         return (

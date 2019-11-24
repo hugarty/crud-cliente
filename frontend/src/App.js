@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import './App.css';
 
 import Cliente from './components/cliente/cliente'
-import { listaClientes, removeTokenEPerfilDoLocalStorage } from './services/ApiCrudCliente'
+import { listaClientes, removeTokenEPerfilDoLocalStorage, deletaCliente,adicionaCliente } from './services/ApiCrudCliente'
 import Formulario from './components/formulario/formularioAdicionaCliente';
 
 class App extends Component {
@@ -29,6 +29,22 @@ class App extends Component {
         this.props.history.push('/');
     }
 
+    appendNovoCliente(cliente){
+        adicionaCliente(cliente)
+        .then(json => this.setState({clientes: [...this.state.clientes, json]}));
+        
+    }
+
+    removeCliente(cliente){
+        deletaCliente(cliente)
+        .then(resp => {
+            if(resp.ok){
+                const novoArrayClientes = this.state.clientes.filter((obj, index)=> obj.id !== cliente);
+                this.setState({clientes: novoArrayClientes})
+            }
+        })
+    }
+
     render() {
         return (
             <Fragment>
@@ -40,9 +56,13 @@ class App extends Component {
                         Logout
                     </button>
                 </header>
-                <Formulario />
+                <Formulario appendNovoCliente={this.appendNovoCliente.bind(this)} />
                 { (this.state.clientes) ? 
-                    this.state.clientes.map(cliente => <Cliente key={cliente.id} atributos={cliente}/>): ''}
+                    this.state.clientes.map(cliente => <Cliente key={cliente.id} 
+                            removeCliente={this.removeCliente.bind(this)} 
+                            atributos={cliente}/>) 
+                    : ''}
+                    
             </Fragment>
         );
     }

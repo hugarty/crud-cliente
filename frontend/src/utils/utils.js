@@ -21,9 +21,32 @@ export const mascaraCEP = value => {
 
 export const mascaraTelefone = value => {
     value = value
-      .replace(/\D/g, '')
-      .replace(/(\(\d{2})\)(\d)/, '$1-$2') 
-      .replace(/(\d{4})\d+?$/, '$1') 
-      .replace(/(-\d{5})\d+?$/, '$1')
+        .replace(/\D/g, '')
+        .replace(/(\d{2})(\d)/, '($1)$2') 
+        .replace(/(\d{4})(\d)/, '$1-$2') 
+        .replace(/(-\d{4})\d+?$/, '$1') 
     return value
+}
+
+export const mascaraCelular = value => {
+    value = value
+        .replace(/\D/g, '')
+        .replace(/(\d{2})(\d)/, '($1)$2')
+        .replace(/(\d{5})(\d)/, '$1-$2') 
+        .replace(/(-\d{4})\d+?$/, '$1')  
+    return value
+}
+
+
+export const apenasDigitos = value => {
+    return value.replace(/\D/g, '');
+}
+
+
+export const retiraMascaraTelefones = telefones => {
+    let telefonesSemMascara = telefones.map(telefone => {
+        telefone.numero = apenasDigitos(telefone.numero);
+        return telefone;
+    })
+    return telefonesSemMascara;
 }

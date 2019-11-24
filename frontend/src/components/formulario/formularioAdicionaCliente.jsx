@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 
 import './formulario.css'
 import Email from './email/email'
-import {mascaraCPF, mascaraCEP} from '../../utils/utils'
+import {mascaraCPF, mascaraCEP, apenasDigitos, retiraMascaraTelefones} from '../../utils/utils'
 import {getCEP} from '../../services/viacep'
 import Telefone from './telefone/telefone'
 
@@ -12,9 +12,9 @@ class Formulario extends Component {
         super()
         this.state = {
             nome: "",
-            email:[],
             cpf: "",
-            telefones:[{numero:"",tipoTelefoneEnum:""}],
+            email:[],
+            telefones:[],
             endereco:{
                 cep:"",
                 logradouro:"",
@@ -43,14 +43,14 @@ class Formulario extends Component {
             this.setState({ endereco :{...this.state.endereco, [event.target.name]:cpfComMascara}})
             if(cpfComMascara.length === 9){
                 getCEP(cpfComMascara)
-                .then(this.populaEMostraEndereco);
+                .then(this.populaComAPIEMostraEndereco);
             }
         }
         else
             this.setState({ endereco :{...this.state.endereco, [event.target.name]: (event.target.value)}})
     }
 
-    populaEMostraEndereco = json =>{
+    populaComAPIEMostraEndereco = json =>{
         this.setState({html : {
             mostraEnderecoCompleto: 'endereco'
         }})
@@ -69,13 +69,35 @@ class Formulario extends Component {
         }
     }
 
+    getEmails (emails){
+        this.setState({email: emails})
+    }
+    
+    getTelefones (telefones){
+        this.setState({telefones: telefones})
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
+        let json = {}
+        json.nome = this.state.nome;
+        json.cpf = apenasDigitos(this.state.cpf);
+        json.email = this.state.email;
+        json.telefones = retiraMascaraTelefones(this.state.telefones);
+        json.endereco = {
+            bairro : this.state.endereco.bairro,
+            cep : apenasDigitos(this.state.endereco.cep),
+            cidade : this.state.endereco.cidade,
+            complemento : this.state.endereco.complemento,
+            logradouro : this.state.endereco.logradouro,
+            uf : this.state.endereco.uf,
+        }
+        this.props.appendNovoCliente(json);
     }
 
     render(){
         return (
-        <form>
+        <form onSubmit={this.handleSubmit}>
             <h1>Formulário adicionar cliente</h1>
             <label htmlFor="nome">Nome do cliente</label>
             <input type="text" name="nome" minLength="3" maxLength="100" onChange={this.handleChange}required/>
@@ -83,8 +105,8 @@ class Formulario extends Component {
             <input type="text" name="cpf"  minLength="14" required
                 value={this.state.cpf}  
                 onChange={this.handleChangeCPF}/>
-            <Email />
-            <Telefone/>
+            <Email getEmails={this.getEmails.bind(this)}/>
+            <Telefone getTelefones={this.getTelefones.bind(this)}/>
             <section>
                 <legend>Endereço</legend>
                 <label htmlFor="cep">cep</label>
@@ -116,7 +138,7 @@ class Formulario extends Component {
                     <input type="text" name="complemento" onChange={this.handleChangeEndereco}/>
                 </div>
             </section>
-            <button type="submit" onClick={this.handleSubmit}>enviar</button>
+            <button type="submit">enviar</button>
         </form>
         )
     }
