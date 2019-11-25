@@ -25,7 +25,12 @@
     margin-bottom: 10px;    
 }
 
-.conteudo-formulario label, legend {
+.conteudo-formulario legend {
+    font-weight: bold;
+    margin-top: 6px;
+    margin-right: 5px;
+}
+.conteudo-formulario label {
     margin-bottom: 3px;
     margin-top: 3px;
     margin-right: 5px;
@@ -44,4 +49,16 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: baseline;
+}
+
+.loading-gif{
+    height:15px;
+}
+
+.esconde-warning-png{
+    display: none;
+}
+
+.mostra-warning-png{
+    display: inline;
 }

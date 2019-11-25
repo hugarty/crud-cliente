@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 
 import './formulario.css'
-import {mascaraCPF, mascaraCEP, apenasDigitos, retiraMascaraTelefones,mascaraCelular, mascaraTelefone, mascaraNome} from '../../utils/utils'
+import {mascaraCPF, mascaraCEP, apenasDigitos, retiraMascaraTelefones,mascaraCelular, mascaraTelefone, mascaraNome, erroHandler} from '../../utils/utils'
 import {getCEP} from '../../services/viacep'
 
 class Formulario extends Component {
@@ -23,7 +23,8 @@ class Formulario extends Component {
                 complemento:""
             },
             html :{
-                mostraEnderecoCompleto: 'endereco'
+                mostraEnderecoCompleto: 'endereco',
+                mostraWarning: "esconde-warning-png"
             }
         }
     }
@@ -42,10 +43,11 @@ class Formulario extends Component {
 
     handleChangeEndereco = (event, mascaraParaCEP) =>{
         if(mascaraParaCEP){
-            const cpfComMascara = mascaraCEP(event.target.value);
-            this.setState({ endereco :{...this.state.endereco, [event.target.name]:cpfComMascara}})
-            if(cpfComMascara.length === 9){
-                getCEP(cpfComMascara)
+            const cepComMascara = mascaraCEP(event.target.value);
+            this.setState({ endereco :{...this.state.endereco, [event.target.name]:cepComMascara}})
+            if(cepComMascara.length === 9){
+                this.setState({html:{...this.state.html, mostraWarning: "mostra-warning-png"}});
+                getCEP(cepComMascara)
                 .then(this.populaComAPIEMostraEndereco);
             }
         }
@@ -54,7 +56,7 @@ class Formulario extends Component {
     }
 
     populaComAPIEMostraEndereco = json =>{
-        this.setState({html : {
+        this.setState({html : {...this.state.html,
             mostraEnderecoCompleto: 'endereco'
         }})
         if(!json.erro){
@@ -66,7 +68,8 @@ class Formulario extends Component {
                 uf:json.uf
                 },
                 html : {
-                    mostraEnderecoCompleto: 'endereco-completo'
+                    mostraEnderecoCompleto: 'endereco-completo',
+                    mostraWarning: "esconde-warning-png"
                 }
             })
         }
@@ -113,6 +116,8 @@ class Formulario extends Component {
         const novosTelefones = this.state.telefones.map((obj,index)=>{
             if(index === posicao){
                 obj.numero = this.mascaraDeAcordoComTipo(e.target.value, obj.tipoTelefoneEnum);
+            }else{
+                obj.numero = this.mascaraDeAcordoComTipo(obj.numero, obj.tipoTelefoneEnum);
             }
             return obj;
         })
@@ -125,6 +130,8 @@ class Formulario extends Component {
             if(index === posicao){
                 obj.tipoTelefoneEnum = e.target.value;
                 obj.numero = this.mascaraDeAcordoComTipo(obj.numero, obj.tipoTelefoneEnum)
+            }else{
+                obj.numero = this.mascaraDeAcordoComTipo(obj.numero, obj.tipoTelefoneEnum);
             }
             return obj;
         })
@@ -184,8 +191,24 @@ class Formulario extends Component {
             logradouro : this.state.endereco.logradouro,
             uf : this.state.endereco.uf,
         }
-        this.props.enviaJsonParaPai(json);
-        this.limpaFormulario();
+        try {
+            if(json.cpf.length !== 11)
+                throw new erroHandler("CPF");
+
+            json.telefones.forEach((obj, index) => {
+                if(obj.numero.length < 10){
+                    throw new erroHandler("Telefone",`(Campo número:${index+1})`)
+                }
+            })
+            
+            if(json.endereco.cep.length !== 8)
+                throw new erroHandler("CEP")
+            
+            this.props.enviaJsonParaPai(json);
+            this.limpaFormulario();
+        } catch (error) {
+            alert(`Preencha o ${error.nome}${error.mensagem} corretamente.`)
+        }
     }
     
     limpaFormulario(){
@@ -194,8 +217,8 @@ class Formulario extends Component {
             cpf: "",
             email:[""],
             telefones:[{
-                numero:'', 
-                tipoTelefoneEnum:'CELULAR'}],
+                ...this.state.telefones[0],
+                numero:''}],
             endereco:{
                 cep:"",
                 logradouro:"",
@@ -203,6 +226,9 @@ class Formulario extends Component {
                 cidade:"",
                 uf:"",
                 complemento:""
+            },
+            html : {...this.state.html,
+                mostraEnderecoCompleto: 'endereco'
             }
         })
     }
@@ -228,7 +254,7 @@ class Formulario extends Component {
                 {this.geraEmails()}
             </div>
             <div>
-                <label>Telefones:<br/></label>
+                <label>Telefones:</label>
                 <button type="button" onClick={this.adicionaTelefone}>+</button>
                 <button type="button" onClick={this.removeTelefone}>-</button>
             </div>
@@ -237,10 +263,10 @@ class Formulario extends Component {
             </div>
             <section>
                 <legend>Endereço</legend>
-                <label htmlFor="cep">CEP:<br/></label>
+                <label htmlFor="cep">CEP: <img className={`${this.state.html.mostraWarning} loading-gif`} alt="asdf" src={require('../../icons/warning.png')} /><br/></label>
                 <input type="text" name="cep" required minLength="9"
                     value={this.state.endereco.cep} 
-                    onChange={e => this.handleChangeEndereco(e, true)}/>
+                    onChange={e => this.handleChangeEndereco(e, true)}/> 
                 <div className={this.state.html.mostraEnderecoCompleto}>
                     <label htmlFor="uf">uf: 
                         <input type="text" name="uf" required

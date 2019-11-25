@@ -3,7 +3,6 @@ export const mascaraNome = value => {
         .replace(/([^A-Za-z0-9\s])/g, '')
 }
 
-
 export const mascaraCPF = value => {
     value = value
       .replace(/\D/g, '')
@@ -45,11 +44,15 @@ export const apenasDigitos = value => {
     return value.replace(/\D/g, '');
 }
 
-
 export const retiraMascaraTelefones = telefones => {
     let telefonesSemMascara = telefones.map(telefone => {
         telefone.numero = apenasDigitos(telefone.numero);
         return telefone;
     })
     return telefonesSemMascara;
+}
+
+export function erroHandler (nome, mensagem){
+    this.nome = nome || "error";
+    this.mensagem = mensagem || '';
 }

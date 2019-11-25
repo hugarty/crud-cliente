@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import './App.css';
 
 import Cliente from './components/cliente/cliente'
-import { listaClientes, removeTokenEPerfilDoLocalStorage, adicionaCliente, deletaCliente, atualizaCliente } from './services/ApiCrudCliente'
+import { listaClientes, removeTokenEPerfilDoLocalStorage, adicionaCliente, deletaCliente, atualizaCliente, ehAdministrador } from './services/ApiCrudCliente'
 import Formulario from './components/formulario/formularioAdicionaCliente';
 
 class App extends Component {
@@ -22,7 +22,7 @@ class App extends Component {
                 this.setState({clientes:json})
             })
             .catch( any => {
-                alert("Não consegui pegar os clientes no servidor backend.\nVou te enviar para a tela de login.")
+                alert("Não foi possível pegar os clientes no servidor backend.\nVou te enviar para a tela de login.")
                 this.props.history.push('/');
             })
     }
@@ -33,8 +33,14 @@ class App extends Component {
                 return (
                     <div className="cliente" key={cliente.id}>
                         <div className="editar-img">
-                            <img alt="Atualizar o cliente" onClick={this.mostraFormularioAtualizacaoCliente} src={require('./icons/edit.png')} />
-                            <span>Editar</span>
+                            <div className="editar-logo-texto"
+                                onClick={() => {
+                                    const idCliente = cliente.id;
+                                    this.mostraFormularioAtualizacaoCliente(idCliente)
+                                }} >
+                                <img alt="Atualizar o cliente" src={require('./icons/edit.png')} />
+                                <span>Editar</span>
+                            </div>
                         </div>
                         <Cliente
                             removeCliente={this.removeCliente.bind(this)} 
@@ -56,8 +62,8 @@ class App extends Component {
         .then(json => {
             this.setState({clientes: [...this.state.clientes, json]})
             this.fechaFormularioAdicaoCliente();
-        });
-        
+        })
+        .catch(()=> ehAdministrador("Não foi possível adicionar o cliente.\n\n\nTente fazer login novamente"));
     }
 
     atualizaCliente(cliente){
@@ -71,7 +77,8 @@ class App extends Component {
             })
             this.setState({clientes : novoArrayClientes});
             this.fechaFormularioAtualizacaoCliente();
-        });
+        })
+        .catch(()=> ehAdministrador("Não foi possível atualizar o cliente.\n\n\nTente fazer login novamente"));
     }
 
     removeCliente(cliente){
@@ -82,6 +89,7 @@ class App extends Component {
                 this.setState({clientes: novoArrayClientes})
             }
         })
+        .catch(() => ehAdministrador("Não foi possível remover o cliente.\n\n\nTente fazer login novamente"))
     }
 
     mostraFormularioAdicaoCliente = () => {
@@ -91,10 +99,10 @@ class App extends Component {
         this.setState({ENUMmostraFormularioAdicao: "nao-mostra-formulario-adicao"})
     }
 
-    mostraFormularioAtualizacaoCliente = (e) => {
+    mostraFormularioAtualizacaoCliente = (cliente) => {
         this.setState({
             ENUMmostraFormularioAtualizacao: "mostra-formulario-atualizacao",
-            idClienteParaSerAtualizado: e.target.name
+            idClienteParaSerAtualizado: cliente
         })
     }
     fechaFormularioAtualizacaoCliente = () => {
@@ -108,10 +116,10 @@ class App extends Component {
         return (
             <Fragment>
                 <header>
-                    <div className="adicion-cliente" onClick={this.mostraFormularioAdicaoCliente}>
-                        <img alt="Adicionar cliente" onClick={this.mostraFormularioAtualizacaoCliente} src={require('./icons/plus.png')} />
+                    <button className="adicion-cliente" onClick={this.mostraFormularioAdicaoCliente}>
+                        <img alt="Adicionar cliente" src={require('./icons/plus.png')} />
                         <span>Adicionar cliente</span>
-                    </div>
+                    </button>
                     <button onClick={this.fazLogout.bind(this)}>
                         Logout
                     </button>

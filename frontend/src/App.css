@@ -42,12 +42,31 @@ header{
   align-items: center;
 }
 
+.cliente >.editar-img > div{
+  cursor: pointer;
+}
+
+.editar-logo-texto{
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
 .adicion-cliente {
   padding: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+}
+
+.adicion-cliente > span{
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .formulario {

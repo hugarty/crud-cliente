@@ -27,7 +27,7 @@ function Cliente ({atributos, removeCliente}){
                     <p>Complemento: <span>{atributos.endereco.complemento}</span></p>
                 </div>
             </div>
-            <button onClick={onClickRemoveCliente}>remover cliente</button>
+            <button onClick={onClickRemoveCliente}> <img alt="Remover cliente" src={require('../../icons/cancel.png')} />remover cliente</button>
         </div>
     )
 }

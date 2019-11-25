@@ -73,6 +73,14 @@ export const removeTokenEPerfilDoLocalStorage = json =>{
     localStorage.removeItem(STORAGE.PERFIL);
 }
 
+export const ehAdministrador = (mensagem) => {
+    if(localStorage.getItem("perfil").includes("ADMIN")){
+        window.alert(mensagem);
+    }
+    else{
+        window.alert("Você não pode executar esta ação!");
+    }
+}
 
 export const getHeader = () =>{
     return new Headers(HEADERS);
