@@ -24,7 +24,7 @@ export default function Login ({history}) {
         <form onSubmit={handleSubmit}>
             <fieldset>
                 <span>{erroMsg}</span>
-                <legend>Logar</legend>
+                <legend>Acesso</legend>
                 <label htmlFor="login">Nome de usuario</label>
                 <input type="text" name="email" required
                     onChange={e => setLogin(e.target.value)}/>
@@ -33,7 +33,7 @@ export default function Login ({history}) {
                 <input type="password" name="senha" required
                     onChange={e => setSenha(e.target.value)}/>
 
-                <button type="submit">Login</button>
+                <button type="submit">Entrar</button>
             </fieldset>
         </form>
     )

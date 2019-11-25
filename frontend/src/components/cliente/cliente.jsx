@@ -1,5 +1,5 @@
 import React from 'react';
-
+import "./index.css"
 
 function Cliente ({atributos, removeCliente}){
 
@@ -11,16 +11,22 @@ function Cliente ({atributos, removeCliente}){
     }
 
     return (
-        <div>
-            <p>{atributos.id}- {atributos.nome}</p>
-            <p>{atributos.cpf}</p>
-            {atributos.email.map((email,itemIndex) => <span key={itemIndex}>{email}</span>)}
-            {atributos.telefones.map((telefone) => <p key={telefone.id}>{telefone.numero}{telefone.tipoTelefoneEnum}</p>)}
-            <p>Endereço</p>
-            {atributos.endereco.bairro}
-            {atributos.endereco.cep}
-            {atributos.endereco.cidade}
-            {atributos.endereco.complemento}
+        <div className="conteudo-cliente">
+            <div className="conteudo-texto">
+                <div>
+                    <h2>Nome: {atributos.nome}</h2>
+                    <p>CPF: <span>{atributos.cpf}</span></p>
+                    <div>Emails:<br/> {atributos.email.map((email,itemIndex) => <span key={itemIndex}>{email}<br/></span>)}</div>
+                    <div>Telefones:<br/> {atributos.telefones.map((telefone) => <span className="numero-telefone" key={telefone.id}>{telefone.tipoTelefoneEnum}: {telefone.numero}<br/></span>)}</div>
+                </div>
+                <div>
+                    <h3>Endereço:</h3>
+                    <p>CEP: <span>{atributos.endereco.cep}</span></p>
+                    <p>Cidade: <span>{atributos.endereco.cidade}</span></p>
+                    <p>Bairro: <span>{atributos.endereco.bairro}</span></p>
+                    <p>Complemento: <span>{atributos.endereco.complemento}</span></p>
+                </div>
+            </div>
             <button onClick={onClickRemoveCliente}>remover cliente</button>
         </div>
     )

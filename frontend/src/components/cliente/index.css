@@ -1,0 +1,30 @@
+.conteudo-cliente{
+    padding: 10px;
+    display: flex;
+    flex-flow: column wrap;
+    width: 90%;
+    justify-content: space-between;
+    font-family: 'Alata', sans-serif;
+}
+
+.conteudo-cliente > h2,h3,p,div {
+    font-family: 'Alata', sans-serif;
+}
+
+.conteudo-texto{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.conteudo-texto>div{
+    padding: 10px;
+}
+
+.conteudo-texto .numero-telefone{
+    font-size: 10pt;
+}
+
+
+

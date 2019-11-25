@@ -1,11 +1,8 @@
 import React, {Component} from 'react'
 
 import './formulario.css'
-import Email from './email/email'
-import {mascaraCPF, mascaraCEP, apenasDigitos, retiraMascaraTelefones} from '../../utils/utils'
+import {mascaraCPF, mascaraCEP, apenasDigitos, retiraMascaraTelefones,mascaraCelular, mascaraTelefone} from '../../utils/utils'
 import {getCEP} from '../../services/viacep'
-import Telefone from './telefone/telefone'
-
 
 class Formulario extends Component {
     constructor() {
@@ -13,8 +10,10 @@ class Formulario extends Component {
         this.state = {
             nome: "",
             cpf: "",
-            email:[],
-            telefones:[],
+            email:[""],
+            telefones : [{
+                numero:'', 
+                tipoTelefoneEnum:'CELULAR'}],
             endereco:{
                 cep:"",
                 logradouro:"",
@@ -69,12 +68,101 @@ class Formulario extends Component {
         }
     }
 
-    getEmails (emails){
-        this.setState({email: emails})
-    }
-    
     getTelefones (telefones){
         this.setState({telefones: telefones})
+    }
+
+    handleChangeEmail = (e) => {
+        const posicao = parseInt(e.target.name);
+        const emailsAlterado = this.state.email.map((obj,index)=>{
+            if(index === posicao){
+                obj = e.target.value;
+            }
+            return obj;
+        })
+        this.setState({email: emailsAlterado})
+    }
+
+    geraEmails = () =>{
+        return this.state.email.map((obj, index)=>(
+            <input key={index} name={index} type="email" required
+                value={this.state.email[index]}
+                onChange={this.handleChangeEmail}/>
+            )
+        )
+    }
+    
+    adicionaEmail = () =>{
+        this.setState({email :[...this.state.email,""]})
+    }
+    
+    removeEmail = () =>{
+        if(this.state.email.length > 1){
+            let novosEmails = this.state.email.map(t=>t);
+            novosEmails.pop()
+            this.setState({email : novosEmails})
+        }
+    }
+
+    handleChangeNumero = (e) => {
+        const posicao = parseInt(e.target.name);
+        const novosTelefones = this.state.telefones.map((obj,index)=>{
+            if(index === posicao){
+                obj.numero = this.mascaraDeAcordoComTipo(e.target.value, obj.tipoTelefoneEnum);
+            }
+            return obj;
+        })
+        this.setState({telefones: novosTelefones})
+    }
+
+    handleChangeTipoNumero = (e) => {
+        const posicao = parseInt(e.target.name);
+        const novosTelefones = this.state.telefones.map((obj,index)=>{
+            if(index === posicao){
+                obj.tipoTelefoneEnum = e.target.value;
+                obj.numero = this.mascaraDeAcordoComTipo(obj.numero, obj.tipoTelefoneEnum)
+            }
+            return obj;
+        })
+        this.setState({telefones: novosTelefones})
+    }
+
+    mascaraDeAcordoComTipo = (numero, tipo) =>{
+        if(tipo === "CELULAR"){
+            numero = mascaraCelular(numero);
+        }
+        else{
+            numero = mascaraTelefone(numero);
+        }
+        return numero;
+    }
+
+    geraTelefones = () =>{
+        return this.state.telefones.map((telefone, index) => (
+            <div key={index}>
+                <input name={index} type="text" required minLength="13"
+                    value={this.state.telefones[index].numero}
+                    onChange={this.handleChangeNumero}/>
+                <select name={index}
+                    onChange={this.handleChangeTipoNumero}>
+                    <option value="CELULAR">Celular</option>
+                    <option value="RESIDENCIAL">Residencial</option>
+                    <option value="COMERCIAL">Comercial</option>
+                </select>
+            </div>
+        ));
+    }
+    
+    adicionaTelefone = () =>{
+        this.setState({telefones :[...this.state.telefones, {numero:'', tipoTelefoneEnum:'CELULAR'}]})
+    }
+
+    removeTelefone = () => {
+        if(this.state.telefones.length > 1){
+            let novosTelefones = this.state.telefones.map(t=>t);
+            novosTelefones.pop()
+            this.setState({telefones : novosTelefones})
+        }
     }
 
     handleSubmit = (e) => {
@@ -100,8 +188,10 @@ class Formulario extends Component {
         this.setState({
             nome: "",
             cpf: "",
-            email:[],
-            telefones:[],
+            email:[""],
+            telefones:[{
+                numero:'', 
+                tipoTelefoneEnum:'CELULAR'}],
             endereco:{
                 cep:"",
                 logradouro:"",
@@ -115,7 +205,7 @@ class Formulario extends Component {
 
     render(){
         return (
-        <form onSubmit={this.handleSubmit}>
+        <form className="conteudo-formulario" onSubmit={this.handleSubmit}>
             <h1>Formulário para {this.props.titulo} cliente</h1>
             <label htmlFor="nome">Nome do cliente</label>
             <input type="text" name="nome" minLength="3" maxLength="100" required
@@ -125,37 +215,52 @@ class Formulario extends Component {
             <input type="text" name="cpf"  minLength="14" required
                 value={this.state.cpf}  
                 onChange={this.handleChangeCPF}/>
-            <Email teste={this.state.teste}getEmails={this.getEmails.bind(this)}/>
-            <Telefone getTelefones={this.getTelefones.bind(this)}/>
+            <div>
+                <div>
+                <label>Emails:</label>
+                    <button type="button" onClick={this.adicionaEmail}>+</button>
+                    <button type="button" onClick={this.removeEmail}>-</button>    
+                </div>
+                {this.geraEmails()}
+            </div>
+            <div>
+                <label>Telefones:<br/></label>
+                <button type="button" onClick={this.adicionaTelefone}>+</button>
+                <button type="button" onClick={this.removeTelefone}>-</button>
+            </div>
+            <div className="telefones">
+                    {this.geraTelefones()}
+            </div>
             <section>
                 <legend>Endereço</legend>
-                <label htmlFor="cep">cep</label>
+                <label htmlFor="cep">CEP:<br/></label>
                 <input type="text" name="cep" required minLength="9"
                     value={this.state.endereco.cep} 
                     onChange={e => this.handleChangeEndereco(e, true)}/>
                 <div className={this.state.html.mostraEnderecoCompleto}>
-                    <label htmlFor="uf">uf</label>
-                    <input type="text" name="uf" required
-                        value={this.state.endereco.uf}  
-                        onChange={this.handleChangeEndereco}/>
-
-                    <label htmlFor="cidade">Cidade</label>
-                    <input type="text" name="cidade" required
-                        value={this.state.endereco.cidade}  
-                        onChange={this.handleChangeEndereco}/>
-
-                    <label htmlFor="logradouro">Logradouro</label>
-                    <input type="text" name="logradouro" required
-                        value={this.state.endereco.logradouro}  
-                        onChange={this.handleChangeEndereco}/>
-
-                    <label htmlFor="bairro">Bairro</label>
-                    <input type="text" name="bairro" required
-                        value={this.state.endereco.bairro}  
-                        onChange={this.handleChangeEndereco}/>
-
-                    <label htmlFor="complemento">Complemento</label>
-                    <input type="text" name="complemento" onChange={this.handleChangeEndereco}/>
+                    <label htmlFor="uf">uf: 
+                        <input type="text" name="uf" required
+                            value={this.state.endereco.uf}  
+                            onChange={this.handleChangeEndereco}/>
+                    </label>
+                    <label htmlFor="cidade">Cidade: 
+                        <input type="text" name="cidade" required
+                            value={this.state.endereco.cidade}  
+                            onChange={this.handleChangeEndereco}/>
+                    </label>    
+                    <label htmlFor="logradouro">Logradouro: 
+                        <input type="text" name="logradouro" required
+                            value={this.state.endereco.logradouro}  
+                            onChange={this.handleChangeEndereco}/>
+                    </label>
+                    <label htmlFor="bairro">Bairro:
+                        <input type="text" name="bairro" required
+                            value={this.state.endereco.bairro}  
+                            onChange={this.handleChangeEndereco}/>
+                    </label>
+                    <label htmlFor="complemento">Complemento:
+                        <input type="text" name="complemento" onChange={this.handleChangeEndereco}/>
+                    </label>
                 </div>
             </section>
             <button type="submit">enviar</button>

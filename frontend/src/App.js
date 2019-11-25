@@ -31,8 +31,8 @@ class App extends Component {
         if (this.state.clientes){
             return this.state.clientes.map(cliente => {
                 return (
-                    <div key={cliente.id}>
-                        <button name={cliente.id} 
+                    <div className="cliente" key={cliente.id}>                        
+                        <button name={cliente.id}
                             onClick={this.mostraFormularioAtualizacaoCliente}>
                                 Altera Cliente {cliente.id}</button>
                         <Cliente
@@ -52,7 +52,10 @@ class App extends Component {
 
     appendNovoCliente(cliente){
         adicionaCliente(cliente)
-        .then(json => this.setState({clientes: [...this.state.clientes, json]}));
+        .then(json => {
+            this.setState({clientes: [...this.state.clientes, json]})
+            this.fechaFormularioAdicaoCliente();
+        });
         
     }
 
@@ -111,19 +114,25 @@ class App extends Component {
                         Logout
                     </button>
                 </header>
-                <div className={this.state.ENUMmostraFormularioAdicao}>
-                    <button onClick={this.fechaFormularioAdicaoCliente}>
-                        fechar
-                    </button>
-                    <Formulario titulo="adicionar" enviaJsonParaPai={this.appendNovoCliente.bind(this)} />
-                </div>
-                <div className={this.state.ENUMmostraFormularioAtualizacao}>
-                    <button onClick={this.fechaFormularioAtualizacaoCliente}>
-                        fechar
-                    </button>
-                    <Formulario titulo="atualizar" enviaJsonParaPai={this.atualizaCliente.bind(this)} />
-                </div>
-                {this.listaClientes()}                    
+                <div className="container">
+                    <div className={`${this.state.ENUMmostraFormularioAdicao} formulario`}>
+                        <button onClick={this.fechaFormularioAdicaoCliente}>
+                           FECHAR
+                        </button>
+                        <div>
+                            <Formulario titulo="adicionar" enviaJsonParaPai={this.appendNovoCliente.bind(this)} />
+                        </div>
+                    </div>
+                    <div className={`${this.state.ENUMmostraFormularioAtualizacao} formulario`}>
+                        <button onClick={this.fechaFormularioAtualizacaoCliente}>
+                            FECHAR
+                        </button>
+                        <div>
+                            <Formulario titulo="atualizar" enviaJsonParaPai={this.atualizaCliente.bind(this)} />
+                        </div>
+                    </div>
+                    {this.listaClientes()}    
+                </div>               
             </Fragment>
         );
     }
