@@ -60,7 +60,7 @@ public class EnderecoDto {
 
     private String aplicaMascaraCEP(String cep){
         String cepComMascara = String.format("%s-%s", 
-            cep.substring(0, 6),cep.substring(6));
+            cep.substring(0, 5),cep.substring(5));
         return cepComMascara;
     }
 

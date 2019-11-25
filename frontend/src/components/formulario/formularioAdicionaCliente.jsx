@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 
 import './formulario.css'
-import {mascaraCPF, mascaraCEP, apenasDigitos, retiraMascaraTelefones,mascaraCelular, mascaraTelefone} from '../../utils/utils'
+import {mascaraCPF, mascaraCEP, apenasDigitos, retiraMascaraTelefones,mascaraCelular, mascaraTelefone, mascaraNome} from '../../utils/utils'
 import {getCEP} from '../../services/viacep'
 
 class Formulario extends Component {
@@ -30,6 +30,10 @@ class Formulario extends Component {
  
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value });
+    }
+    
+    handleChangeNome = event => {
+        this.setState({ [event.target.name]: mascaraNome(event.target.value) })
     }
 
     handleChangeCPF = event => {
@@ -210,7 +214,7 @@ class Formulario extends Component {
             <label htmlFor="nome">Nome do cliente</label>
             <input type="text" name="nome" minLength="3" maxLength="100" required
                 value={this.state.nome}
-                onChange={this.handleChange}/>
+                onChange={this.handleChangeNome}/>
             <label htmlFor="cpf">CPF </label>
             <input type="text" name="cpf"  minLength="14" required
                 value={this.state.cpf}  

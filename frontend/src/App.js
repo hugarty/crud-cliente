@@ -31,10 +31,11 @@ class App extends Component {
         if (this.state.clientes){
             return this.state.clientes.map(cliente => {
                 return (
-                    <div className="cliente" key={cliente.id}>                        
-                        <button name={cliente.id}
-                            onClick={this.mostraFormularioAtualizacaoCliente}>
-                                Altera Cliente {cliente.id}</button>
+                    <div className="cliente" key={cliente.id}>
+                        <div className="editar-img">
+                            <img alt="Atualizar o cliente" onClick={this.mostraFormularioAtualizacaoCliente} src={require('./icons/edit.png')} />
+                            <span>Editar</span>
+                        </div>
                         <Cliente
                             removeCliente={this.removeCliente.bind(this)} 
                             atributos={cliente}/>
@@ -107,9 +108,10 @@ class App extends Component {
         return (
             <Fragment>
                 <header>
-                    <button onClick={this.mostraFormularioAdicaoCliente}>
-                        Adicionar cliente
-                    </button>
+                    <div className="adicion-cliente" onClick={this.mostraFormularioAdicaoCliente}>
+                        <img alt="Adicionar cliente" onClick={this.mostraFormularioAtualizacaoCliente} src={require('./icons/plus.png')} />
+                        <span>Adicionar cliente</span>
+                    </div>
                     <button onClick={this.fazLogout.bind(this)}>
                         Logout
                     </button>

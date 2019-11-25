@@ -35,6 +35,21 @@ header{
   border-radius: 10px;
 }
 
+.cliente >.editar-img {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.adicion-cliente {
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
 .formulario {
   flex-direction: column;
   align-items: flex-end;
